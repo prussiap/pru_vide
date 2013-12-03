@@ -1,4 +1,8 @@
-gem "standalone-activerecord"
-gem "sqlite3"
-gem "rake"
+source 'https://rubygems.org'
 
+gem 'temper-control'
+
+group :test do
+  gem "capybara"
+  gem "rspec"
+end
