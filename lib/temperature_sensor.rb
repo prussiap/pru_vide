@@ -14,6 +14,7 @@ class TemperatureSensor
 			@temperature = temp.to_f/1000
 		else
 			@tempoerature = nil
+		end
 	end
 
 	def to_temp_f
