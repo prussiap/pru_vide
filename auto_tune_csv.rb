@@ -19,7 +19,7 @@ my_file = CSV.open("#{Time.now}_autotune.csv", 'wb')
 i = 2
 while true
 	pv = temp.get_temp
-	if pv.to_f > setpoint
+	if pv.to_f >= setpoint
 		pin.off
 		pin_status = 0
 	else
