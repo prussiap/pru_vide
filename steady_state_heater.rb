@@ -20,7 +20,7 @@ run_1_time = start_time + (45 * 60)
 my_file = CSV.open("#{Time.now}_steady_state_heater.csv", 'wb')
 
 loop do
-	while Time.now < run_1_time
+	if Time.now < run_1_time
 		power.pulse
 		my_file << [ setpoint, pv, pin_status, (start_time - Time.now) ]
 		p "Current temp: #{pv}, Status: #{pin_status}"
