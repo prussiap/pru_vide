@@ -12,7 +12,7 @@ start_time = Time.now
 pin_status = 0
 pin = PiPiper::Pin.new(:pin => 17, :direction => :out)
 # pin.on
-power = HeatingElement.new adapter: pin
+power = HeatingElement.new adapter: PiPiper::Pin.new(:pin => 17, :direction => :out)
 power.pulse_width = 3000
 
 run_1_time = start_time + (45 * 60)
