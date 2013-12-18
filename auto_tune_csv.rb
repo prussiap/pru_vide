@@ -1,13 +1,13 @@
-require_relative 'heating_element'
+require_relative 'lib/heating_element'
 require "rubygems"
-require "google_drive"
+#require "google_drive"
 require 'csv'
 require_relative "lib/temperature_sensor"
 require 'pi_piper'
 include PiPiper
 
 
-setpoint = 50
+setpoint = 50.0
 temp = TemperatureSensor.new
 start_time = Time.now
 pin_status = 0
@@ -19,7 +19,7 @@ my_file = CSV.open("#{Time.now}_autotune.csv", 'wb')
 i = 2
 while true
 	pv = temp.get_temp
-	if pv.to_i > setpoint
+	if pv.to_f >= setpoint
 		pin.off
 		pin_status = 0
 	else
@@ -27,6 +27,7 @@ while true
 		pin_status = 1
 	end
 	my_file << [ setpoint, pv, pin_status, (start_time - Time.now) ]
+	p "Current temp: #{pv}, Setpoint: #{setpoint}, Status: #{pin_status}"
 	i += 1
 	sleep(5)
 end
