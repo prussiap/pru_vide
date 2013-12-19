@@ -15,7 +15,7 @@ pin.off
 power = HeatingElement.new pin
 power.pulse_width = 2000
 
-run_1_time = start_time + (10 * 60)
+run_1_time = start_time + (45 * 60)
 
 my_file = CSV.open("#{Time.now}_steady_state_heater.csv", 'wb')
 
