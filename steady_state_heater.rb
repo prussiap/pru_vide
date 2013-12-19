@@ -13,9 +13,9 @@ pin_status = 0
 pin = PiPiper::Pin.new(:pin => 17, :direction => :out)
 pin.off
 power = HeatingElement.new pin
-power.pulse_width = 2000
+power.pulse_width = 1500
 
-run_1_time = start_time + (45 * 60)
+run_1_time = start_time + (60 * 60)
 
 my_file = CSV.open("#{Time.now}_steady_state_heater.csv", 'wb')
 
@@ -26,13 +26,13 @@ loop do
 		power.pulse
 		my_file << [ pv, pin_status, (Time.now - start_time)/60]
 		p "Current temp: #{pv}, Status: #{pin_status}"
-		sleep 1
+		sleep 0.5
 	else
-		power.pulse_width = 3000
+		power.pulse_width = 2000
 		power.pulse
 		my_file << [ pv, pin_status, (Time.now - start_time)/60 ]
 		p "Current temp: #{pv}, Status: #{pin_status}"
-		sleep 1
+		sleep 0.5
 	end
 end
 
