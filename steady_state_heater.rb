@@ -30,7 +30,7 @@ loop do
 	else
 		power.pulse_width = 3000
 		power.pulse
-		my_file << [ pv, pin_status, (start_time - Time.now) ]
+		my_file << [ pv, pin_status, (Time.now - start_time)/60 ]
 		p "Current temp: #{pv}, Status: #{pin_status}"
 		sleep 1
 	end
