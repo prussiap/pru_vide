@@ -13,11 +13,10 @@ pin_status = 0
 pin = PiPiper::Pin.new(:pin => 17, :direction => :out)
 pin.off
 power = HeatingElement.new pin
-power.pulse_width = 1500
-
+power.pulse_width = 1000
 run_1_time = start_time + (60 * 60)
 
-my_file = CSV.open("#{Time.now.strftime("%m_%d_%h_%m")}_steady_state_heater.csv", 'wb')
+my_file = CSV.open("#{Time.now.strftime("%m_%d_%h_%m")}_rice_cooker_steady_state_heater.csv", 'wb')
 
 loop do
 	pin_status = pin.read
