@@ -13,12 +13,11 @@ class TemperatureSensor
 			temp = my_split[1].split("=")[1]
 			@temperature = temp.to_f/1000
 		else
-			@tempoerature = nil
+			@temperature = nil
 		end
 	end
 
 	def to_temp_f
 		(@temperature * 9.0 ) / 5.0 + 32.0
 	end
-
 end

@@ -34,23 +34,3 @@ loop do
 		sleep 0.5
 	end
 end
-
-# while true
-# 	pv = temp.get_temp
-# 	if pin.on?
-# 		pin.off
-# 		pin_status = 0
-# 	else
-# 		pin.on
-# 		pin_status = 1
-# 	end
-# 	my_file << [ setpoint, pv, pin_status, (start_time - Time.now) ]
-# 	p "Current temp: #{pv}, Status: #{pin_status}"
-# 	sleep 1
-# end
-
-
-# power in 0.2 steps
-# percent of 5sec pulse time power is on
-# pin on, sleep 5/power
-# for remainder of time, power off
