@@ -7,12 +7,12 @@ include PiPiper
 # Logs in.
 # You can also use OAuth. See document of
 # GoogleDrive.login_with_oauth for details.
-session = GoogleDrive.login("david@synteny.us", "Aquafina1")
+session = GoogleDrive.login("pruvide@gmail.com", "pruvide1234")
 
 # First worksheet of
 # https://docs.google.com/spreadsheet/ccc?key=pz7XtlQC-PYx-jrVMJErTcg
 #https://docs.google.com/spreadsheet/ccc?key=0AgyFdwj_tPl_dG5pOXBjRWMxWGF1ZHRXNGxzTHVzZmc&usp=sharing
-ws = session.spreadsheet_by_key("0AgyFdwj_tPl_dG5pOXBjRWMxWGF1ZHRXNGxzTHVzZmc").worksheets[0]
+ws = session.spreadsheet_by_key("0AkG7PuKNtWsgdHpzZ21BVVBVRkhhZ1ZFcXhnUTdtdkE").worksheets[0]
 
 temp = TemperatureSensor.new
 start_time = Time.now
