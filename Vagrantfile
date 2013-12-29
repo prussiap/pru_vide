@@ -7,11 +7,11 @@ Vagrant.configure("2") do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "pygame_pi_precise64"
+  config.vm.box = "pru_vide_with_zmq"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = "http://synteny_vagrant.s3.amazonaws.com/vagrant_boxes/pygame_pi_precise64.box"
+  config.vm.box_url = "http://synteny_vagrant.s3.amazonaws.com/vagrant_boxes/pru_vide_with_zmq.box"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -21,6 +21,11 @@ Vagrant.configure("2") do |config|
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
   # config.vm.network :private_network, ip: "192.168.33.10"
+Vagrant::Config.run do |config|
+  # Forward guest port 80 to host port 4567
+    config.vm.forward_port 5000, 5000
+    config.vm.forward_port 6000, 6000
+ end
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -39,7 +44,7 @@ Vagrant.configure("2") do |config|
   #
   config.vm.provider :virtualbox do |vb|
   #   # Don't boot with headless mode
-    vb.gui = true
+  #  vb.gui = true
 
      # Use VBoxManage to customize the VM. For example to change memory:
     vb.customize ["modifyvm", :id, "--memory", "1024"]
