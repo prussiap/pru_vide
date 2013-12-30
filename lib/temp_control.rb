@@ -3,10 +3,13 @@ require_relative 'heating_element'
 require_relative 'temperature_sensor'
 
 class TempControl
-    attr_reader :input, :output, :pid
+    attr_reader :input, :output, :pid, :kp, :kd, :ki, :last_reading
 
     def initialize options = {}
       @pulse_range = options[:pulse_range] || 5000
+      @kp = options[:kp]
+      @kd = options[:kd]
+      @ki = options[:ki]
       @input = TemperatureSensor.new
       @output = HeatingElement.new adapter: GPIO.new(pin: 17)
       configure_automatic_control options
@@ -15,7 +18,7 @@ class TempControl
     def configure_automatic_control options
       @target = options[:target]
       @pid = Temper::PID.new maximum: @pulse_range
-      @pid.tune 44, 165, 4
+      @pid.tune kp, ki, kd
       @pid.setpoint = @target
     end
 
