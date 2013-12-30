@@ -4,6 +4,13 @@ os.environ["SDL_FBDEV"] = "/dev/fb1"
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 from text_pygame import TextPygame
+import zmq
+
+#zmq subscribe
+context = zmq.Context()
+socket = context.socket(zmq.SUB)
+socket.connect("tcp://127.0.0.1:6000")
+socket.setsockopt(zmq.SUBSCRIBE, "menu")
 
 #Colors
 BLACK = (0,0,0)
@@ -22,14 +29,14 @@ TOP_MIDDLE      = (50,10)
 CENTER_MIDDLE   = (50,50)
 BOTTOM_CENTER   = (50,100)
 
-set_point = { 'text' : "63", 'draw_location' : (20,50), 'textpos' : (), 'color' : BLACK}
-two_element = { 'text' : "Temp: 63C", 'draw_location' : (10,70), 'textpos' : (), 'color' : BLACK}
-three_element = { 'text' : "Set Temp: 66C", 'draw_location' : (10,100), 'textpos' : (), 'color' : BLACK}
+set_point = { 'text' : "100", 'draw_location' : (20,50), 'textpos' : (), 'color' : BLACK}
+current_temp = { 'text' : "63", 'draw_location' : (10,70), 'textpos' : (), 'color' : BLACK}
+menu = { 'text' : "200", 'draw_location' : (10,100), 'textpos' : (), 'color' : BLACK}
 
-set_point     = TextPygame("65", TOP_MIDDLE, BLACK, "Set Temp:")
-current_temp  = TextPygame("55", CENTER_MIDDLE, BLACK, "Curr Temp:")
-menu          = TextPygame("Menu", TOP_LEFT, BLACK)
-temp_temp     = TextPygame("0", BOTTOM_CENTER, BLACK, "Set Temp:")
+set_point_object     = TextPygame("65", TOP_MIDDLE, BLACK, "Set Temp:")
+current_temp_object  = TextPygame("55", CENTER_MIDDLE, BLACK, "Curr Temp:")
+menu_object          = TextPygame("Menu", TOP_LEFT, BLACK)
+temp_temp_object     = TextPygame("0", BOTTOM_CENTER, BLACK, "Set Temp:")
 
 all_temps = [set_point, current_temp, menu]
 
@@ -73,4 +80,7 @@ font = pygame.font.Font(None, 30)
 initiate_buttons()
 
 while True:
+  temp = socket.recv()
+  if temp:
+    current_temp['text'] = temp
   draw_all()
