@@ -1,3 +1,4 @@
+require 'pi_piper'
 class HeatingElement
     attr_accessor :pulse_width, :pulse_range, :name, :adapter
 
@@ -5,7 +6,7 @@ class HeatingElement
       @pulse_range = options[:pulse_range] || 5000
       @on = false
       @pulse_range_end = (Time.now.to_i * 1000) + @pulse_range
-      @adapter = adapter
+      @adapter = PiPiper::Pin.new(:pin => 17, :direction => :out)
       @pulse_width = 0
       @name = options[:name]
     end

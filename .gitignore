@@ -1,3 +1,5 @@
 config/settings.rb
 .vagrant/
 .DS_Store
+.vagrant
+.vagrant/*

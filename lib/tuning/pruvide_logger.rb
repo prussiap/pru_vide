@@ -1,10 +1,10 @@
 require "rubygems"
 require "google_drive"
 require 'csv'
-require_relative "../config/settings"
+require_relative "../../config/settings"
 
 class PruvideLogger
-    attr_accessor :current_file, :log_method, :i. :current_file, :current_temperature, :pin_status
+    attr_accessor :current_file, :log_method, :current_file, :current_temperature, :pin_status
 
     def initialize(log_method, out_filename = "")
         @log_method = log_method
