@@ -1,13 +1,16 @@
+require_relative '../config/settings.rb'
+
 class TemperatureSensor
-	attr_reader :temperature
+	attr_reader :temperature, :temp_device
 
 	def initialize
+    @temp_device = Settings.settings[:temp_probe_address][:tft_probe]
 		modprobe = `sudo modprobe w1_gpio && sudo modprobe w1_therm`
 		device_list =  `ls -l /sys/bus/w1/devices/`
 	end
 
 	def get_temp
-		temp = `cat /sys/bus/w1/devices/28-00000544fa82/w1_slave`
+		temp = `cat /sys/bus/w1/devices/#{temp_device}/w1_slave`
 		my_split = temp.split("\n")
 		if my_split[0][-3..-1] =="YES"
 			temp = my_split[1].split("=")[1]

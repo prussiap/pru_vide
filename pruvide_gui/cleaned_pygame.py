@@ -10,7 +10,7 @@ import zmq
 context = zmq.Context()
 socket = context.socket(zmq.SUB)
 socket.connect("tcp://127.0.0.1:6000")
-socket.setsockopt(zmq.SUBSCRIBE, "menu")
+socket.setsockopt(zmq.SUBSCRIBE, "")
 
 #Colors
 BLACK = (0,0,0)
@@ -18,16 +18,16 @@ WHITE = (250,250,250)
 
 # Button to pin mappings
 UP    = 23
-DOWN  = 4
+DOWN  = 27
 MENU  = 22
 ENTER = 18
 
 PINS = [ UP, DOWN, MENU, ENTER ]
 #Draw Locations
 TOP_LEFT        = (5,5)
-TOP_MIDDLE      = (50,10)
-CENTER_MIDDLE   = (50,50)
-BOTTOM_CENTER   = (50,100)
+TOP_MIDDLE      = (50,5)
+CENTER_MIDDLE   = (60,80)
+BOTTOM_CENTER   = (60,150)
 
 set_point    = { 'text' : "100", 'draw_location' : (20,50), 'textpos' : (), 'color' : BLACK}
 current_temp = { 'text' : "63", 'draw_location' : (10,70), 'textpos' : (), 'color' : BLACK}
