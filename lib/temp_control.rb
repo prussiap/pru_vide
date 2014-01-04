@@ -6,6 +6,7 @@ require_relative 'tuning/pruvide_logger'
 
 class TempControl
     attr_reader :input, :output, :pid, :kp, :ki, :kd, :log, :start_time, :last_reading
+    attr_accessor :target
 
     def initialize options = {}
       @pulse_range = options[:pulse_range] || 5000
