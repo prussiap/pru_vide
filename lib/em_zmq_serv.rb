@@ -6,6 +6,10 @@ context = EM::ZeroMQ::Context.new(1)
 
 ctx = EM::ZeroMQ::Context.new(1)
 
+@listings = {  pork: 60,
+              duck: 50,
+              eggs: 61
+}
 
 class ControlMock
   attr_accessor :target
@@ -18,9 +22,8 @@ end
 EM.run {
   puts "em run"
 
-  socket = context.socket(ZMQ::SUB)
-  socket.setsockopt(ZMQ::SUBSCRIBE, 'message')
-  socket.connect("tcp://127.0.0.1:6000")
+  socket = context.socket(ZMQ::PUB)
+  socket.bind("tcp://127.0.0.1:6000")
   control = ControlMock.new
 
   rep_sock = ctx.socket(ZMQ::REP)
@@ -28,17 +31,16 @@ EM.run {
   rep_sock.connect('tcp://127.0.0.1:9000')
 
   rep_sock.on(:message) { |part|
-    puts "is message"
-    ll = JSON.parse(part.copy_out_string)
-    puts "receive #{ll['msg']}"
-    rep_sock.send_msg("#{{msg: 'pong!'}.to_json}")
-    if ll["msg"]
-      puts ll["msg"]
-    elsif ll['setpoint']
+    parsed_message = JSON.parse(part.copy_out_string)
+    if parsed_message["msg"]
+      puts parsed_message["msg"]
+    elsif parsed_message['setpoint']
       puts 'receive setpoint'
-      control.target = ll['setpoint']
+      control.target = parsed_message['setpoint']
+      puts "new target #{control.target}"
+    elsif parsed_message['menu']
+      rep_sock.send_msg("#{{msg: @listings}.to_json}")
     end
-    puts control.target
     part.close
   }
 
@@ -46,9 +48,8 @@ EM.run {
 
   puts "it live"
 
-  socket.on(:message) { |part|
-    puts part.copy_out_string
-    part.close
+  EM.add_periodic_timer(3) {
+    socket.send_msg(control.target.to_s)
   }
 
 }
