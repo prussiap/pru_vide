@@ -28,8 +28,17 @@ EM.run {
   rep_sock.connect('tcp://127.0.0.1:9000')
 
   rep_sock.on(:message) { |part|
-    puts "receive #{part.copy_out_string}"
-    rep_sock.send_msg 'pong!'
+    puts "is message"
+    ll = JSON.parse(part.copy_out_string)
+    puts "receive #{ll['msg']}"
+    rep_sock.send_msg("#{{msg: 'pong!'}.to_json}")
+    if ll["msg"]
+      puts ll["msg"]
+    elsif ll['setpoint']
+      puts 'receive setpoint'
+      control.target = ll['setpoint']
+    end
+    puts control.target
     part.close
   }
 
@@ -39,16 +48,6 @@ EM.run {
 
   socket.on(:message) { |part|
     puts part.copy_out_string
-    # puts "is message"
-    # puts part.copy_out_string
-    # ll = JSON.parse(part.copy_out_string)
-    # if ll["msg"]
-    #   puts ll["msg"]
-    # elsif ll['setpoint']
-    #   puts 'receive setpoint'
-    #   control.target = ll['setpoint']
-    # end
-    # puts control.target
     part.close
   }
 

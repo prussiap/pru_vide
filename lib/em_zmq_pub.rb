@@ -20,10 +20,11 @@ EM.run {
 
   EM.add_periodic_timer(3) {
     puts "sending ping"
-    req_sock.send_msg('ping')
+    req_sock.send_msg({msg: 'ping'}.to_json)
   }
   req_sock.on(:message) { |part|
-    puts part.copy_out_string
+    ll = JSON.parse(part.copy_out_string)
+    puts ll['msg']
   }
 
 
