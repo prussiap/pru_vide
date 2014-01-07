@@ -5,7 +5,7 @@ require 'pi_piper'
 require_relative 'tuning/pruvide_logger'
 
 class TempControl
-    attr_reader :input, :output, :pid, :kp, :ki, :kd, :log, :start_time, :last_reading
+    attr_reader :input, :output, :pid, :kp, :ki, :kd, :log, :start_time, :last_reading, :current_time, :target
 
     def initialize options = {}
       @pulse_range = options[:pulse_range] || 5000
@@ -20,12 +20,12 @@ class TempControl
       configure_automatic_control options
     end
 
-    def current_time
+    def current_time_now
         (Time.now-@start_time)
     end
 
     def current_time_min
-        current_time/60
+        current_time_now/60
     end
 
     def configure_automatic_control options
@@ -54,9 +54,9 @@ class TempControl
 
     def control_cycle
       calculate_power_level
-      curr_time = current_time_min
-      @log.log_me(@last_reading,'ignore', curr_time)
-      p "Current temp: #{@last_reading}, Time: #{curr_time}"
+      @current_time = current_time_min
+      @log.log_me(@last_reading,'ignore', @current_time)
+      p "Current temp: #{@last_reading}, Time: #{@current_time}"
       output.pulse
     end
 end
