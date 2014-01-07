@@ -1,7 +1,8 @@
 require 'rubygems'
 require 'em-zeromq'
-require_relative 'temper_control'
+require 'temper'
 require_relative 'lib/temp_control'
+require 'json'
 
 # presets hash for menu
 @listings = {  pork: 60,
@@ -26,14 +27,14 @@ EM.run {
   # to update target temperature, hash needs a "setpoint" key
   # and the new target temperature as it's associated value.
   # to retrieve menu listing hash, send a "menu" key, value is unused.
-  rep_sock.on(:message) { |part|
+  rep_socket.on(:message) { |part|
     parsed_message = JSON.parse(part.copy_out_string)
     if parsed_message['setpoint']
-      rep_sock.send_msg('received setpoint')
+      rep_socket.send_msg('received setpoint')
       control.target = parsed_message['setpoint']
       puts "new target #{control.target}"
     elsif parsed_message['menu']
-      rep_sock.send_msg("#{{msg: @listings}.to_json}")
+      rep_socket.send_msg("#{{msg: @listings}.to_json}")
     end
     part.close
   }
@@ -45,6 +46,8 @@ EM.run {
 
   # sends current observed temperature via PUB socket
   EM.add_periodic_timer(0.1) {
-    push_socket.send_msg(control.last_reading)
+  to_ui = { temp: control.last_reading.to_s, time: control.current_time.to_s,
+            set_point: control.target.to_s }.to_json
+    push_socket.send_msg(to_ui.to_s)
   }
 }
