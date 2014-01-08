@@ -29,8 +29,9 @@ EM.run {
   # to retrieve menu listing hash, send a "menu" key, value is unused.
   rep_socket.on(:message) { |part|
     parsed_message = JSON.parse(part.copy_out_string)
+    p parsed_message
     if parsed_message['setpoint']
-      rep_socket.send_msg('received setpoint')
+      rep_socket.send_msg('success')
       control.target = parsed_message['setpoint']
       puts "new target #{control.target}"
     elsif parsed_message['menu']

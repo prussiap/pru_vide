@@ -15,9 +15,9 @@ sub_socket.connect("tcp://127.0.0.1:6000")
 sub_socket.setsockopt(zmq.SUBSCRIBE, '')
 
 #zmq req
-#req_context = zmq.Context()
-#req_socket = req_context.socket(zmq.REQ)
-#req_socket.connect("tcp://127.0.0.1:6000")
+req_context = zmq.Context()
+req_socket = req_context.socket(zmq.REQ)
+req_socket.connect("tcp://127.0.0.1:5000")
 
 #Colors
 BLACK = (0,0,0)
@@ -69,28 +69,25 @@ def welcome_screen():
 
 def run_on_button_interrupt(pin):
   print pin
+  setpoint_send = ''
   if pin == UP:
-    test = int(set_point['text']) + 1
+    test = float(set_point['text']) + 1
     set_point['text'] = str(test)
     draw_all()
   if pin == DOWN:
-    test = int(set_point['text']) - 1
+    test = float(set_point['text']) - 1
     set_point['text'] = str(test)
     draw_all()
   if pin == ENTER:
-    response = ""
-    set_point = set_point['text']
-    print set_point
-    render_and_draw_text(setp)
-    render_and_draw_text(set_point)
-
- #   rep_socket.send(set_point)
- #   while response == "":
- #     response = rep_socket.recv()
- #     if response:
- #       render_and_draw_text(setp)
- #       render_and_draw_text(set_point)
- #       print response
+    response = ''
+    setpoint_send = set_point['text']
+    to_send = json.dumps({ 'setpoint' : setpoint_send })
+    req_socket.send(to_send)
+    response = req_socket.recv()
+    if response:
+      render_and_draw_text(setp)
+      render_and_draw_text(set_point)
+      print response
 
 def initiate_buttons():
   for pin in PINS:
@@ -107,7 +104,6 @@ def render_and_draw_text(text):
   textpos = screen.blit(word,text['draw_location'])
   text['textpos'] = textpos
   pygame.display.update()
-
 
 def clear_screen():
   screen.fill(WHITE)
@@ -136,5 +132,5 @@ while True:
   if my_dict:
     current_temp['text'] = my_dict['temp'][0:4]
     current_time['text'] = my_dict['time'][0:3]
-    set_point['text']    = my_dict['set_point'][0:4]
+#    set_point['text']    = my_dict['set_point'][0:4]
   draw_all()
