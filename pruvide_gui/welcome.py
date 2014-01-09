@@ -56,10 +56,16 @@ def clear_screen():
   pygame.display.update()
 
 
+fun_text = TextPygame("hello", screen, TOP_LEFT, prefix = "World", textpos = ())
 font = pygame.font.Font(None, 25)
 #choose_setpoint = TextPygame("25", screen, TOP_MIDDLE, BLACK, 20)
 
-welcome_screen()
-time.sleep(1)
+#welcome_screen()
+#time.sleep(1)
 clear_screen()
-time.sleep(6)
+#time.sleep(6)
+fun_text.render_and_draw()
+time.sleep(3)
+fun_text.set_text("china")
+fun_text.render_and_draw()
+time.sleep(3)
