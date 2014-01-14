@@ -3,7 +3,7 @@ from pygame.locals import *
 os.environ["SDL_FBDEV"] = "/dev/fb1"
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
-from text_pygame import TextPygame
+from menu_system import MenuSystem
 import zmq
 import time
 
@@ -55,17 +55,15 @@ def clear_screen():
   screen.fill(WHITE)
   pygame.display.update()
 
-
-fun_text = TextPygame("hello", screen, TOP_LEFT, prefix = "World", textpos = ())
-font = pygame.font.Font(None, 25)
-#choose_setpoint = TextPygame("25", screen, TOP_MIDDLE, BLACK, 20)
-
-#welcome_screen()
-#time.sleep(1)
 clear_screen()
-#time.sleep(6)
-fun_text.render_and_draw()
-time.sleep(3)
-fun_text.set_text("china")
-fun_text.render_and_draw()
-time.sleep(3)
+
+menu = ["Set Temp", "Pre-sets", "Choos Device", "menu4", "menu5", "menu6"]
+
+my_menu = MenuSystem(screen, menu)
+my_menu.draw_menu()
+my_menu.return_current()
+time.sleep(1)
+my_menu.up_menu()
+my_menu.draw_menu()
+my_menu.return_current()
+time.sleep(1)
