@@ -7,6 +7,8 @@ from text_pygame import TextPygame
 import zmq
 import time
 import json
+from ui_state_machine import UiStateMachine
+from menu_system import MenuSystem
 
 #zmq subscribe
 sub_context = zmq.Context()
@@ -40,8 +42,6 @@ SET_POINT       = (10,20)
 CURRENT_TEMP    = (30,20)
 CURRENT_TIME    = (50,20)
 
-
-
 def welcome_screen():
   welcome_word = TextPygame("Welcome to PruVide", screen, CURRENT_TIME, font = 20, textpos = (85,10,15,130))
   image = pygame.image.load("/home/pi/all_projects/pru_vide/pruvide_gui/images/cooking_ingredients.jpg")
@@ -50,6 +50,7 @@ def welcome_screen():
   screen.blit(image_rotated,(0,20,80,120))
   welcome_word.render_and_draw()
   pygame.display.update()
+
 
 def run_on_button_interrupt(pin):
   print pin
@@ -65,7 +66,9 @@ def run_on_button_interrupt(pin):
     to_send = json.dumps({ 'setpoint' : set_point.text })
     req_socket.send(to_send)
     response = req_socket.recv()
+    print "i hit enter"
     if response:
+      print "I'm in if response"
       render_and_draw_text(setp)
       render_and_draw_text(set_point)
       print response
@@ -83,6 +86,30 @@ def draw_all():
   for i in all_temps:
     i.render_and_draw()
 
+def check_state_on_button_interrupt(pin):
+  my_state = some_state.current_state
+  if my_state == 'main_menu':
+    if pin == UP:
+      my_menu.up_menu()
+      my_menu.draw_menu()
+    elif pin == DOWN:
+      my_menu.down_menu()
+      my_menu.draw_menu()
+    elif pin == ENTER:
+      menu_state_map[my_menu.return_current()]()
+
+  if my_state == 'setting_setpoint':
+    if pin == UP:
+      temporary_temp.up_one()
+      temporary_temp.render_and_draw()
+    elif pin == DOWN:
+      temporary_temp.down_one()
+      temporary_temp.render_and_draw()
+    elif pin == ENTER:
+      menu_state_map['send_temperature']
+
+    elif pin == MENU:
+
 # Init screen and buttons
 pygame.init()
 screen = pygame.display.set_mode((120,160))
@@ -94,8 +121,57 @@ initiate_buttons()
 set_point = TextPygame("50", screen, SET_POINT, prefix = "Setpoint: ", textpos = ())
 current_temp = TextPygame("70", screen, CURRENT_TEMP, prefix = "Temp: ", textpos = ())
 current_time = TextPygame("0", screen, CURRENT_TIME, prefix = "Time(min): ", textpos = ())
-
+temporary_temp = TextPygame("50", screen, SET_POINT, prefix = "", textpos = ())
 all_temps = [  set_point, current_temp, current_time]
+
+menu = {'Set Temp': '50', 'Pre-sets': {'beef' : '140', 'fish': '65', 'veggies': '100' },
+        'Config': {'Device': 'Rice Cooker', 'Probe': '28-0000000000'} }
+
+some_state = UiStateMachine()
+my_menu = MenuSystem(screen, menu_level(menu))
+
+def menu_level(full_menu):
+  level = []
+  for k,v in full_menu.items():
+    level.append(v)
+  return level
+
+def send_setpoint():
+    response = ''
+    to_send = json.dumps({ 'setpoint' : temporary_temp.text })
+    req_socket.send(to_send)
+    response = req_socket.recv()
+    print "i hit enter"
+    if response:
+      print "I'm in if response"
+      clear_screen()
+      set_point.text = temporary_temp.text
+      set_point.render_and_draw()
+      print response
+    my_menu.send_temperature()
+
+def to_setpoint():
+  my_menu.set_setpoint()
+  clear_screen()
+  temporary_temp.text = set_point.text
+  temporary_temp.render_and_draw()
+
+def to_preset():
+  my_menu.set_preset()
+  my_menu.set_new_menu(menu_level(menu[my_menu.return_current()]))
+  my_menu.draw_menu()
+
+def to_config():
+  my_menu.set_config()
+  menu_level(menu[my_menu.return_current()])
+
+def cancel_setpoint():
+  my_menu.cancel()
+  temporary_temp.text = ""
+  my_menu.draw_menu()
+
+menu_state_map = { 'Set Temp': to_setpoint, 'Pre-sets': to_preset,
+    'send_temperature': send_setpoint, 'Config': to_config, 'cancel': cancel_setpoint }
 
 welcome_screen()
 time.sleep(2)

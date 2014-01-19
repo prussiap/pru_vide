@@ -16,7 +16,7 @@ class MenuSystem:
     self.menu_objects = deque()
     self.menu_items = deque(menu_items)
     self.padding = 5
-    self.make_menu()
+    self.make_menu_objects()
 
   def place_carrot(self):
     pos = self.menu_objects[0].textpos
@@ -24,7 +24,7 @@ class MenuSystem:
     y = pos[1] + pos[3]
     self.carrot = TextPygame(">", self.screen, (x,y) , prefix = "", textpos = ())
 
-  def make_menu(self):
+  def make_menu_objects(self):
     self.menu_objects = deque()
     currenty = self.starty
     self.menu_objects.append(TextPygame(self.menu_items[0], self.screen, (currenty, self.centerx),
@@ -34,17 +34,16 @@ class MenuSystem:
       self.menu_objects.append(TextPygame(item, self.screen,
             (currenty, self.centerx) , prefix = "", textpos = ()))
 
-
   def return_current(self):
     print self.menu_items[0]
 
   def up_menu(self):
     self.menu_items.rotate(-1)
-    self.make_menu()
+    self.make_menu_objects()
 
   def down_menu(self):
     self.menu_items.rotate(1)
-    self.make_menu()
+    self.make_menu_objects()
 
   def clear_screen(self):
     self.screen.fill((250,250,250))

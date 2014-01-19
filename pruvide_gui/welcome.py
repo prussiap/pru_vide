@@ -57,7 +57,8 @@ def clear_screen():
 
 clear_screen()
 
-menu = ["Set Temp", "Pre-sets", "Choos Device", "menu4", "menu5", "menu6"]
+menu = {'Set Temp': '50', 'Pre-sets': {'beef' : '140', 'fish': '65', 'veggies': '100' },
+        'Config': {'Device': 'Rice Cooker', 'Probe': '28-0000000000'} }
 
 my_menu = MenuSystem(screen, menu)
 my_menu.draw_menu()
