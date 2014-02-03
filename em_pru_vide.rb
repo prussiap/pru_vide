@@ -21,23 +21,27 @@ EM.run {
   control = TempControl.new target: 57.2, pulse_range: 10000, kp: 4.5, ki: 110, kd: 27.5
 
   rep_socket = context.socket(ZMQ::REP)
-  rep_socket.connect("tcp://127.0.0.1:5000")
+  rep_socket.bind("tcp://127.0.0.1:5000")
 
   # takes a hash from JSON.
   # to update target temperature, hash needs a "setpoint" key
   # and the new target temperature as it's associated value.
   # to retrieve menu listing hash, send a "menu" key, value is unused.
   rep_socket.on(:message) { |part|
-    parsed_message = JSON.parse(part.copy_out_string)
-    p parsed_message
-    if parsed_message['setpoint']
-      rep_socket.send_msg('success')
-      control.target = parsed_message['setpoint']
-      puts "new target #{control.target}"
-    elsif parsed_message['menu']
-      rep_socket.send_msg("#{{msg: @listings}.to_json}")
+    begin
+      parsed_message = JSON.parse(part.copy_out_string)
+      p parsed_message
+      if parsed_message['setpoint']
+        rep_socket.send_msg('success')
+        control.target = parsed_message['setpoint']
+        puts "new target #{control.target}"
+      elsif parsed_message['menu']
+        rep_socket.send_msg("#{{msg: @listings}.to_json}")
+      end
+      part.close
+    rescue Exception => e
+      puts "#{e.class}: #{e.message}"
     end
-    part.close
   }
 
   # loops control cycle
