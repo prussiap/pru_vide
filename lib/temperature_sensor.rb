@@ -4,7 +4,7 @@ class TemperatureSensor
 	attr_reader :temperature, :temp_device
 
 	def initialize
-    @temp_device = Settings.settings[:temp_probe_address][:tft_probe]
+    @temp_device = Settings.settings[:devices][:device1][:temp_probe_address]
 		modprobe = `sudo modprobe w1_gpio && sudo modprobe w1_therm`
 		device_list =  `ls -l /sys/bus/w1/devices/`
 	end

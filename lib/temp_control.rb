@@ -16,7 +16,7 @@ class TempControl
       @log = PruvideLogger.new('csv')
       @input = TemperatureSensor.new
       @start_time = Time.now
-      @output = HeatingElement.new adapter: PiPiper::Pin.new(:pin => 17, :direction => :out)
+      @output = HeatingElement.new adapter: PiPiper::Pin.new(:pin => 27, :direction => :out)
 
       configure_automatic_control options
     end
